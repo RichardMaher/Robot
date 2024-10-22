@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<head>
+  
+<title>Robot Assesment</title>
+
+<meta http-equiv = "Content-Type" 
+	  content    = "text/html; charset=utf-8" />
+<meta name       = "author" 
+	  content    = "Richard Maher (c)"/>
+
+<link rel="stylesheet" type="text/css" href="/Robot/robot.css">
+
+<script type="module" src="/Robot/control.js"></script>
+
+</head>
+<body>
+
+<div id="modalWait">
+	<div id="placement">
+		<table cols="2">
+			<tbody>
+				<tr>
+					<td><label for="axisX">Position on X axis:</label></td>
+					<td><input type="range" id="axisX" name="axisX" min="0" max="4" value="4">&nbsp;<span id="valueX"></span></td>
+				</tr>
+				<tr>
+					<td><label for="axisY">Position on Y axis:</label></td>
+					<td><input type="range" id="axisY" name="axisY" min="0" max="4" value="4">&nbsp;<span id="valueY"></span></td>
+				</tr>
+				<tr>
+					<td><label for="facing">Facing Direction:</label></td>
+					<td>
+						<select id="coords">
+						  <option value="0">East</option>
+						  <option value="1" selected>North</option>
+						  <option value="2">West</option>
+						  <option value="3">South</option>
+						</select>
+					</td>
+				</tr>
+				<tr><td colspan="2"><input id="continue" type="button" value="Place Robot" /></td></tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<div class="wholeScreen">
+	<div id="header">
+		<input type="button" id="place" value="Place"> 
+		<input type="button" id="move"  value="Move"> 
+		<input type="button" id="left"  value="Left"> 
+		<input type="button" id="right" value="Right"> 
+		<input type="button" id="report" value="Report"> 
+	</div>
+    <div id="content">
+	</div>
+</div>
+</body>
+</html>
+

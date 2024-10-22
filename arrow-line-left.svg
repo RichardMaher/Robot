@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/css" href="arrow.css" ?>
+<svg xmlns="http://www.w3.org/2000/svg" id="arrowImage" viewBox="0 0 256 256">
+<title>Heading</title>
+	<rect width="256" height="256" fill="none"/>
+	<line x1="224" y1="128" x2="72" y2="128" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" class="st1"/>
+	<polyline points="144 56 72 128 144 200" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" class="st1"/>
+	<line x1="40" y1="40" x2="40" y2="216" fill="none"  stroke-linecap="round" stroke-linejoin="round" stroke-width="16" class="st2"/>
+</svg>

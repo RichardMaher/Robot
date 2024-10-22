@@ -1,0 +1,12 @@
+:root {
+  --stroke-color: blue;
+  --end-color: none;
+}
+
+.st1{
+	stroke:var(--stroke-color);
+}
+
+.st2{
+	stroke:var(--end-color);
+}
