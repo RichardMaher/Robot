@@ -1,6 +1,6 @@
 let robot;
 
-document.addEventListener("DOMContentLoaded", () =>
+document.addEventListener("DOMContentLoaded", async () =>
 	{
 		const axisY = document.getElementById("axisY")
 		const axisX = document.getElementById("axisX")
@@ -8,7 +8,14 @@ document.addEventListener("DOMContentLoaded", () =>
 		const root = document.querySelector(':root');
 		
 		const robotView = document.createElement("div")
+		
+		const arrow = document.createElement("object")
+		arrow.id = "arrow"
+		arrow.alt = "Arrow pointing direction"
+		arrow.data = "arrow-line-left.svg"
+		arrow.type = "image/svg+xml"
 
+		let arrowRoot
 		let maxX = axisX.max
 		let maxY = axisY.max
 		
@@ -29,19 +36,7 @@ document.addEventListener("DOMContentLoaded", () =>
 
 		robot = new
 			function() {		
-				const arrow = document.createElement("object")
-				arrow.id = "arrow"
-				arrow.alt = "Arrow pointing direction"
-				arrow.data = "arrow-line-left.svg"
-				arrow.type = "image/svg+xml"
 				
-				let cellZero = document.getElementById("X0_Y0")
-				cellZero.appendChild(arrow)
-			
-				let imageDOM = document.getElementById("arrow").contentDocument;
-				let svgRoot = imageDOM.querySelector(':root');
-				svgRoot.style.setProperty('--end-color', 'red');
-
 				root.style.setProperty('--arrow-heading', '180deg')
 				
 				let facing = 2 
@@ -62,12 +57,10 @@ document.addEventListener("DOMContentLoaded", () =>
 				
 				const place =
 						function(x, y, f) {
-							let oldDiv = document.getElementById("X" + pos[0] + "_Y" + pos[1])
 							pos[0] = x
 							pos[1] = y
 							facing = f
 							let newDiv = document.getElementById("X" + pos[0] + "_Y" + pos[1])
-							oldDiv.removeChild(arrow)
 							newDiv.appendChild(arrow)
 							root.style.setProperty('--arrow-heading', heading[facing].rotate + 'deg')
 							return true;
@@ -75,23 +68,20 @@ document.addEventListener("DOMContentLoaded", () =>
 				
 				const move =
 						function() {
-							let moveAxis = heading[facing]
-							let direction = heading[facing].crementer
-							if (pos[moveAxis.axis] + direction < axis[moveAxis.axis].min ||
-								pos[moveAxis.axis] + direction > axis[moveAxis.axis].max) {
+							if (onEdge()) {
 								return 0
 							}
-							let oldDiv = document.getElementById("X" + pos[0] + "_Y" + pos[1])
+							let moveAxis = heading[facing]
+							let direction = heading[facing].crementer
 							pos[moveAxis.axis] += direction
 							let newDiv = document.getElementById("X" + pos[0] + "_Y" + pos[1])
-							oldDiv.removeChild(arrow)
 							newDiv.appendChild(arrow)
 							return 1	
 						}
 						
 				const rotate =
 						function(dir) {
-							let oldDeg = heading[facing].rotate
+							arrowRoot.style.setProperty('--end-color', 'none');
 							if (facing + dir < 0) {
 								facing = 3
 							} else {
@@ -103,6 +93,7 @@ document.addEventListener("DOMContentLoaded", () =>
 							}
 							let newDeg = heading[facing].rotate
 							root.style.setProperty('--arrow-heading', heading[facing].rotate + 'deg')
+							deadEnd()
 						}
 						
 				const report =
@@ -112,23 +103,41 @@ document.addEventListener("DOMContentLoaded", () =>
 						
 				const cellClick =
 						function(e) {
-							let oldDiv = document.getElementById("X" + pos[0] + "_Y" + pos[1])
 							let coords = e.target.id.split("_")
 							let X = coords[0].substring(1)
 							let Y = coords[1].substring(1)
 							let newDiv = document.getElementById("X" + X + "_Y" + Y)
-							oldDiv.removeChild(arrow)
 							pos[0] = Number(X)
 							pos[1] = Number(Y)
 							newDiv.appendChild(arrow)
 						}
+						
+				const deadEnd = 
+						function() {
+							let imageDOM = document.getElementById("arrow").contentDocument;
+							arrowRoot = imageDOM.querySelector(':root');
+							if (onEdge()) {
+								arrowRoot.style.setProperty('--end-color', 'red');
+							}
+						}
+						
+				function onEdge() {
+					let moveAxis = heading[facing]
+					let direction = heading[facing].crementer
+					if (pos[moveAxis.axis] + direction < axis[moveAxis.axis].min ||
+						pos[moveAxis.axis] + direction > axis[moveAxis.axis].max) {
+							return true;
+					}
+					return false
+				}
 				
 				let result = {
 						 place: place,
 						 move: move,
 						 rotate: rotate,
 						 report: report,
-						 cellClick: cellClick}     
+						 cellClick: cellClick,
+						 deadEnd: deadEnd}     
 						 
 				return result
 			}
@@ -188,5 +197,29 @@ document.addEventListener("DOMContentLoaded", () =>
 			(e) => {
 						robot.place(Number(axisX.value), Number(axisY.value), coords.selectedIndex);
 					});
+		
+		let loaded;
+		let loadPromise = new Promise(resolve => loaded = resolve)
+		arrow.addEventListener("load", loaded, {once: true})
+		
+		
+		let cellZero = document.getElementById("X0_Y0")
+		cellZero.appendChild(arrow)
+		
+		await loadPromise;
+		
+		arrow.addEventListener("load", (e) => {
+			robot.deadEnd()
+		})
+		
+		arrow.addEventListener("transitionstart", (e) => {
+			arrowRoot.style.setProperty('--end-color', 'none');
+		})
+		
+		arrow.addEventListener("transitionend", (e) => {
+			robot.deadEnd()
+		})
 
+// Ready to Rock 'n' Roll		
+		document.getElementById("placement").style.visibility = "visible"
 	})

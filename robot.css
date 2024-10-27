@@ -69,6 +69,7 @@ body {
 	width: 100%;
 	background-color: var(--alt-bg-color);
 	flex-wrap: wrap;
+	font-size: 2em;
 }
 
 #content div {
@@ -125,18 +126,22 @@ body {
 	overflow: auto;
 	text-align: center;
 	padding: 0.5em;
+	font-size: 2em;
 }
 
 #placement {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	visibility: hidden;
 }
 
 input[type="button"] {
+	margin-right: 1em;
 	cursor: pointer;
 	border-radius: 0.66em;
 	font-weight: bold;
+	font-size: 1.5em;
 	text-shadow: 1px 1px 0 #0d0d0d;
 	color: #eff;
 	box-shadow: inset 0 0 0.8em #eff;
@@ -144,25 +149,27 @@ input[type="button"] {
 	background: -moz-linear-gradient(center top, #ccffff 15%, #00ccdd 51%, #007580 65%);
 }
 
+#coords {
+	font-size: 1em;
+}
+	
+#continue {
+	font-size: 1em;
+}
+
 #arrow {
 	transform: rotate(var(--arrow-heading));
+	max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+	transition-duration: 2s;
+    transition-property: transform;
+    transform: rotate(var(--arrow-heading));
 }
 
 @media (prefers-reduced-motion: reduce) {
 	:root {
 		--reduce-motion: 0s;
-	}
-}
-
-@media only screen and (min-device-width : 320px) {
-	body {
-		font-size: 10px;
-	}
-}
-
-@media only screen and (min-device-width : 480px) {
-	body {
-		font-size: 12px;
 	}
 }
 
