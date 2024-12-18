@@ -33,6 +33,38 @@ document.addEventListener("DOMContentLoaded", async () =>
 				})
 			}
 		}
+				
+		let canTalk = false
+        let defaultSpeechRate = 1;
+       
+        if ('speechSynthesis' in window) {
+			canTalk = true;
+			try {
+				let test = new SpeechSynthesisUtterance("hello");
+				test.addEventListener('end', function(){}, false);
+			} catch (err) {
+				canTalk = false;
+			}
+		}
+		
+		const speechError = function(error) {
+				switch(error.error) {
+					case "canceled":
+					case "interrupted":
+						break;
+					case "audio-busy":
+					    setTimeout(function(){alert("Audio in use by other Application");},0);
+						break;
+					default:
+						console.log(error.error);
+						return;
+				}
+				
+				console.log("All good");
+				return;
+			}
+				
+
 
 		robot = new
 			function() {		
@@ -98,7 +130,15 @@ document.addEventListener("DOMContentLoaded", async () =>
 						
 				const report =
 						function() {
-							alert("I am at cell ( " + pos[0] + " , " + pos[1] +" ) facing " + heading[facing].name)
+							let reportText = "I am at cell ( " + pos[0] + " , " + pos[1] +" ) facing " + heading[facing].name
+							if (canTalk) {
+								let reportStatus = new SpeechSynthesisUtterance(reportText);
+								reportStatus.rate = defaultSpeechRate;
+								reportStatus.pitch = 1;
+								reportStatus.addEventListener('error', speechError);
+								speechSynthesis.speak(reportStatus)
+							}
+							alert(reportText)
 						}
 						
 				const cellClick =
@@ -146,17 +186,17 @@ document.addEventListener("DOMContentLoaded", async () =>
 		const modalWait = document.getElementById("modalWait")
 		document.getElementById("continue").addEventListener("click", 
 			(e) => {
-						modalWait.style.display = "none";
-					});
+						modalWait.style.display = "none"
+					})
 		
-		const valueX = document.getElementById("valueX");
+		const valueX = document.getElementById("valueX")
 		axisX.addEventListener("input", (e) => {
 				valueX.innerText = e.target.value; 
 			})
 		axisX.value = axisX.max;
 		valueX.innerText = axisX.value;
 		
-		const valueY = document.getElementById("valueY");
+		const valueY = document.getElementById("valueY")
 		axisY.addEventListener("input", (e) => {
 				valueY.innerText = e.target.value; 
 			})
@@ -166,6 +206,8 @@ document.addEventListener("DOMContentLoaded", async () =>
 		document.getElementById("place").addEventListener("click", 
 			(e) => {
 						modalWait.style.display = "flex";
+						valueY.innerText = axisY.value;
+						valueX.innerText = axisX.value;
 					});
 					
 		document.getElementById("report").addEventListener("click", 
@@ -187,6 +229,13 @@ document.addEventListener("DOMContentLoaded", async () =>
 			(e) => {
 						let result = robot.move();
 						if (!result) {
+							if (canTalk) {
+								let outOfBounds = new SpeechSynthesisUtterance("Unable to comply. You are at the edge of the board.");
+								outOfBounds.rate = defaultSpeechRate;
+								outOfBounds.pitch = 1;
+								outOfBounds.addEventListener('error', speechError);
+								speechSynthesis.speak(outOfBounds)
+							}
 							alert("No go")
 							return
 						}
@@ -219,7 +268,8 @@ document.addEventListener("DOMContentLoaded", async () =>
 		arrow.addEventListener("transitionend", (e) => {
 			robot.deadEnd()
 		})
-
+                				
+ 		console.log("fini")
 // Ready to Rock 'n' Roll		
 		document.getElementById("placement").style.visibility = "visible"
 	})

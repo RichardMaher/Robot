@@ -44,6 +44,7 @@ body {
 	height: 100%;
 	width: 100%;
 	min-height: 0px;
+	overflow: hidden;
 }
 
 #header {
@@ -70,6 +71,7 @@ body {
 	background-color: var(--alt-bg-color);
 	flex-wrap: wrap;
 	font-size: 2em;
+	overflow: none;
 }
 
 #content div {
